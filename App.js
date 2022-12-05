@@ -12,6 +12,7 @@ import { useState } from "react";
 export default function App() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
+  const [toDos, setToDos] = useState({});
   const travel = () => {
     setWorking(false);
   };
@@ -22,6 +23,26 @@ export default function App() {
   const onChanges = (payload) => {
     setText(payload);
   };
+
+  const addToDo = () => {
+    if (text === "") return;
+    // const newToDo = {
+    //   [Date.now()]: {
+    //     id: Date.now(),
+    //     text,
+    //     completed: false,
+    //   },
+    // };
+    const newToDo = Object.assign({}, toDos, {
+      [Date.now()]: {
+        text,
+        work: working,
+      },
+    });
+    setToDos(newToDo);
+    setText("");
+  };
+  console.log(toDos);
 
   return (
     <View style={styles.container}>
@@ -44,6 +65,7 @@ export default function App() {
       </View>
       <View>
         <TextInput
+          onSubmitEditing={addToDo}
           style={styles.input}
           placeholder={
             working ? "Where are you working?" : "Where are you going?"
@@ -51,7 +73,7 @@ export default function App() {
           value={text}
           placeholderTextColor={theme.grey}
           keyboardType="default"
-          returnKeyType="search"
+          returnKeyType="Done"
           secureTextEntry={false}
           onChangeText={onChanges}
         />
