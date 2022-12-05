@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  Alert,
 } from "react-native";
 import { theme } from "./colors";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Fontisto } from "@expo/vector-icons";
 
 const STORAGE_KEY = "@todos";
 
@@ -67,10 +69,21 @@ export default function App() {
   };
 
   const deleteToDo = async (id) => {
-    const newToDos = Object.assign({}, toDos);
-    delete newToDos[id];
-    setToDos(newToDos);
-    await saveToDos(newToDos);
+    Alert.alert("Delete To Do", "Are you sure?", [
+      {
+        text: "Cancel",
+      },
+      {
+        text: "OK",
+        onPress: async () => {
+          const newToDos = Object.assign({}, toDos);
+          delete newToDos[id];
+          setToDos(newToDos);
+          await saveToDos(newToDos);
+        },
+      },
+    ]);
+    return;
   };
 
   return (
@@ -118,7 +131,7 @@ export default function App() {
                     deleteToDo(key);
                   }}
                 >
-                  <Text>❌</Text>
+                  <Fontisto name="trash" size={18} color={theme.grey} />
                 </TouchableOpacity>
               </View>
             )
