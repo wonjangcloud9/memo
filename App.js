@@ -66,6 +66,13 @@ export default function App() {
     setText("");
   };
 
+  const deleteToDo = async (id) => {
+    const newToDos = Object.assign({}, toDos);
+    delete newToDos[id];
+    setToDos(newToDos);
+    await saveToDos(newToDos);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -106,6 +113,13 @@ export default function App() {
             toDos[key].work === working && (
               <View style={styles.toDos} key={key}>
                 <Text style={styles.toDoText}>{toDos[key].text}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    deleteToDo(key);
+                  }}
+                >
+                  <Text>❌</Text>
+                </TouchableOpacity>
               </View>
             )
         )}
@@ -146,6 +160,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     borderRadius: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   toDoText: {
     color: "white",
