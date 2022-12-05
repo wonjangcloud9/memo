@@ -1,15 +1,26 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import { theme } from "./colors";
 import { useState } from "react";
 
 export default function App() {
   const [working, setWorking] = useState(true);
+  const [text, setText] = useState("");
   const travel = () => {
     setWorking(false);
   };
   const work = () => {
     setWorking(true);
+  };
+
+  const onChanges = (payload) => {
+    setText(payload);
   };
 
   return (
@@ -31,6 +42,20 @@ export default function App() {
           </Text>
         </TouchableOpacity>
       </View>
+      <View>
+        <TextInput
+          style={styles.input}
+          placeholder={
+            working ? "Where are you working?" : "Where are you going?"
+          }
+          value={text}
+          placeholderTextColor={theme.grey}
+          keyboardType="default"
+          returnKeyType="search"
+          secureTextEntry={false}
+          onChangeText={onChanges}
+        />
+      </View>
     </View>
   );
 }
@@ -49,6 +74,16 @@ const styles = StyleSheet.create({
   btnText: {
     fontSize: 38,
     fontWeight: "600",
+    color: theme.grey,
+  },
+  input: {
+    backgroundColor: "white",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    marginTop: 30,
+    fontSize: 18,
+    fontWeight: "500",
     color: theme.grey,
   },
 });
