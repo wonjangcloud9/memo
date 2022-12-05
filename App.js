@@ -8,7 +8,10 @@ import {
   ScrollView,
 } from "react-native";
 import { theme } from "./colors";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const STORAGE_KEY = "@todos";
 
 export default function App() {
   const [working, setWorking] = useState(true);
@@ -25,7 +28,32 @@ export default function App() {
     setText(payload);
   };
 
-  const addToDo = () => {
+  const saveToDos = async (toSave) => {
+    try {
+      const s = JSON.stringify(toSave);
+      await AsyncStorage.setItem(STORAGE_KEY, s);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const loadToDos = async () => {
+    try {
+      const s = await AsyncStorage.getItem(STORAGE_KEY);
+      if (s !== null) {
+        const toDos = JSON.parse(s);
+        setToDos(toDos);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    loadToDos();
+  }, []);
+
+  const addToDo = async () => {
     if (text === "") return;
     const newToDo = Object.assign({}, toDos, {
       [Date.now()]: {
@@ -34,9 +62,9 @@ export default function App() {
       },
     });
     setToDos(newToDo);
+    await saveToDos(newToDo);
     setText("");
   };
-  console.log(toDos);
 
   return (
     <View style={styles.container}>
@@ -73,11 +101,14 @@ export default function App() {
         />
       </View>
       <ScrollView>
-        {Object.keys(toDos).map((key) => (
-          <View style={styles.toDos} key={key}>
-            <Text style={styles.toDoText}>{toDos[key].text}</Text>
-          </View>
-        ))}
+        {Object.keys(toDos).map(
+          (key) =>
+            toDos[key].work === working && (
+              <View style={styles.toDos} key={key}>
+                <Text style={styles.toDoText}>{toDos[key].text}</Text>
+              </View>
+            )
+        )}
       </ScrollView>
     </View>
   );
@@ -117,7 +148,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   toDoText: {
-    color: theme.grey,
+    color: "white",
     fontWeight: "500",
   },
 });
