@@ -109,9 +109,7 @@ export default function App() {
         <TextInput
           onSubmitEditing={addToDo}
           style={styles.input}
-          placeholder={
-            working ? "Where are you working?" : "Where are you going?"
-          }
+          placeholder={working ? "일을 입력하세요" : "여행지를 입력하세요"}
           value={text}
           placeholderTextColor={theme.grey}
           keyboardType="default"
